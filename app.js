@@ -2,7 +2,8 @@ var express = require('express')
 var passport = require('passport')
 var handlebars = require('express-handlebars')
 var FacebookStrategy = require('passport-facebook').Strategy
-
+var request = require('request')
+var http = require('http')
 
 // var User = require('./models/user')
 var token;
@@ -15,7 +16,7 @@ passport.use(new FacebookStrategy({
   },
   function(accessToken, refreshToken, profile, cb) {
   	// console.log(profile);
-  	console.log(accessToken);
+  	// console.log(accessToken);
   	 // In this example, the user's Facebook profile is supplied as the user
     // record.  In a production-quality application, the Facebook profile should
     // be associated with a user record in the application's database, which
@@ -61,14 +62,12 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveU
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-app.get('/auth/facebook', passport.authenticate('facebook', { authType: 'rerequest', scope: ['user_friends'] }))
+app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email, user_location, user_friends, user_likes, user_photos, user_posts, user_status'] }))
 
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
-    // console.log("redirect succeeded")
     res.redirect('/main');
   });
 
@@ -77,10 +76,32 @@ app.get('/login', function(req, res){
 	// console.log("redirect failed...")
 	res.sendFile('login.html')
 })
-app.get('/main', function(req, res){
-	console.log(req.user);
 
-	res.render('profile', {id: req.user.id, name: req.user.displayName})
+app.get('/main', function(req, res, next){
+  //friends node /user.id/friends
+  //relationships /user.id?fields=relationship_status,gender,age_range
+
+  var url = 'https://graph.facebook.com/v2.5/me/feed' 
+  // console.log(token);
+  // https://graph.facebook.com/v2.5/me/friends?access_token=CAAH4m87jfmcBADrG85RM3jjiTXLB0oKzizsuPJ60FHW5wwKnt9TwMQs8SIUQRnQtq2k0ZCbIkNwEQmHtJB4lvH81LDRjmZB9ZBgM65ZAJu9NlTPrM5Nv3H8A8WZAXadGPdsNoH3AiPGCoV1F4X4DSyz80ZAsFWKQgtU24e8mZCOGrSTyIHwlaEW1D7zPGNBKl9c2PQqIBXBRAZDZD
+  console.log(url+'?access_token=' + token)
+
+  var friends;
+  // One example of doing get request
+  request
+    .get({url: url+'?access_token=' + token}, function(err, res, body){
+      var info = JSON.parse(body)
+
+      console.log(info)
+    })
+
+
+  // http.get
+
+
+  console.log(res.body);
+  res.json(res.body)
+  // console.log(token);
 
 })
 

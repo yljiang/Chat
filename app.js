@@ -14,7 +14,6 @@ var player = socket.id;
   console.log('a user connected');
   socket.on('new user', function(data, callback){
 
-    console.log(users);
     if(users.indexOf(data) != -1){
       callback(false);
     } else {
@@ -22,20 +21,33 @@ var player = socket.id;
       socket.nickname = data;
       users.push(socket.nickname);
       console.log("new user added: " + socket.nickname);
+      io.emit('user connected', socket.nickname);
+      updateOnlineUsers();
     }
-
-    io.emit('online users', users);
+   
   });
 
+  function updateOnlineUsers(){
+    var html = '';
+    for(var name of users){
+      html += '<li>' + name + '</li>'; 
+    }
+    console.log(html);
+    io.emit('online users', html);
+  }
+
   socket.on('disconnect', function(){
-    io.emit('disconnect');
+    io.emit('disconnect', socket.nickname);
+    users.splice(users.indexOf(socket.nickname), 1);
+    updateOnlineUsers();
+
   });
 
   //receive emitted message
-  socket.on('chat message', function(msg){
+  socket.on('send message', function(msg){
     console.log('message ' + msg);
     //broadcast event to everyone
-    io.emit('chat message', msg);
+    io.emit('new message', {name: socket.nickname, msg: msg});
   });
 
 });

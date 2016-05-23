@@ -34,6 +34,14 @@
         height: 600px;
         float: left;
       }
+      .pm{
+        font: italic;
+        color: rgb(255,179,81);
+      }
+      .error{
+        font: italic;
+        color: rgb(255,58,54);
+      }
     </style>
   </head>
 
@@ -52,6 +60,7 @@
     <div>
     
       <div id='chat'>
+        <p> Welcome to the chatroom! <br> To whisper to someone use /w user msg </p>
         <ul id='messages'></ul>
         <form id='chat-form'>
           <input id='m' autocomplete='off' /><button>Send</button>
@@ -92,35 +101,48 @@
 
     $('#chat-form').submit(function(e){
       e.preventDefault();  
-      socket.emit('send message', $('#m').val());
+      
+      socket.emit('send message', $('#m').val(), function(response){
+          console.log(response);
+          if(response != true){
+            $('#messages').append('<li><span class="error">'+ response + '</span></li>');
+          }
+      });
+
       $('m').val('');
       return false;
     });
 
     //capture broadcasted message from backend
     socket.on('new message', function(data){
-
-      $('#messages').append($('<li>').html('<b>' +  data.name +'</b>: ' + data.msg));
+      $('#messages').append('<li><b>' +  data.name +'</b>: ' + data.msg + '</li>');
 
       //set scroll to bottom 
       var elem = document.getElementById('chat');
       elem.scrollTop = elem.scrollHeight; 
     });
 
+    socket.on('pm', function(data){
+      $('#messages').append('<li><span class="pm"><b>From ' +  data.name +'</b>: ' + data.msg + '</span></li>');
+      //set scroll to bottom 
+      var elem = document.getElementById('chat');
+      elem.scrollTop = elem.scrollHeight; 
+    });
+
     socket.on('online users', function(html){
-        console.log(html)
+        console.log(html);
         $('#onlineusers').html(html);
     });
 
     socket.on('user connected', function(user){
-      $('#messages').append($('<li>').text(user + ' has connected'));
+      $('#messages').append('<li>' + user + ' has connected </li>');
           //set scroll to bottom 
       var elem = document.getElementById('chat');
       elem.scrollTop = elem.scrollHeight; 
-    })
+    });
 
     socket.on('disconnect', function(user){
-      $('#messages').append($('<li>').text(user + ' has disconnected'));
+      $('#messages').append('<li>' + user + ' has disconnected </li>');
           //set scroll to bottom 
       var elem = document.getElementById('chat');
       elem.scrollTop = elem.scrollHeight; 

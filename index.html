@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      #chat-form { background: #000; padding: 3px; position: absolute; top: 600px; width: 500px; }
+      #chat-form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      #chat-form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      #chat{
+       width: 500px;
+       height: 600px;
+       border: 1px solid black; 
+
+      }
+      #registration-div{
+      }
+    </style>
+  </head>
+
+
+  <body>
+    <div id='registration-div'>
+      <p> Please select a username</p>
+      <p id='username-taken'> </p>
+      <form id='registration'>
+        <input type="text" id="nickname">
+        <input type="submit" >
+      </form>
+
+    </div>
+
+    <div id="chat">
+      <ul id="messages"></ul>
+      <form id="chat-form">
+        <input id="m" autocomplete="off" /><button>Send</button>
+      </form> 
+   </div> 
+   <ul id="onlineusers"></ul>
+   <script src="/socket.io/socket.io.js"></script>
+   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+  (function(){
+
+    var socket = io();
+
+    $('#registration').submit(function(e){
+      e.preventDefault();
+
+      socket.emit('new user', $('#nickname').val(), function(data){
+        if(data){
+          $('chat').show();
+
+        } else {
+          $('#username-taken').html('Sorry! Username is already taken!');
+        }
+
+      });
+    });
+
+    $('#chat-form').submit(function(e){
+      e.preventDefault();  
+      socket.emit('chat message', $('#m').val());
+      $('m').val('');
+      return false;
+    });
+
+    //capture broadcasted message from backend
+    socket.on('chat message', function(msg){
+      $('#messages').append($('<li>').text(msg));
+    });
+
+    socket.on('online users', function(users){
+
+      for(var user of users){
+        console.log(user);
+        $('#onlineusers').append('<li>').text(user);
+      }
+    });
+
+    socket.on('disconnect', function(){
+      $('#messages').append($('<li>').text("Someone has disconnected"));
+    });
+
+  })();
+  
+</script>
+
+  </body>
+</html>

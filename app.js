@@ -1,6 +1,10 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var AIMLInterpreter = require('AIMLInterpreter');
+
+var aimlInterpreter = new AIMLInterpreter({name:'Alice', state:'happy'});
+aimlInterpreter.loadAIMLFilesIntoArray(['alice.xml']);
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
@@ -60,7 +64,8 @@ var player = socket.id;
 
         }else{
           //send private message
-          users[to].emit('pm', {name: socket.nickname, msg: pm.trim()});
+          users[socket.nickname].emit('pm from', {name: to, msg: pm.trim()});
+          users[to].emit('pm to', {name: socket.nickname, msg: pm.trim()});
           //display on own chat box
           // users[socket.nickname].emit('pm', {name: socket.nickname, msg: pm.trim()});
 
@@ -68,7 +73,26 @@ var player = socket.id;
         }
 
       }
-    }else{
+    } else if (msg.substr(0,7) == '/alice '){
+        console.log('Chatting with Alice');
+        msg = msg.substr(6);
+        var response;
+        //Get alice response
+        var getResponse = function(answer, wildCardArray, input){
+          console.log(answer + ' | ' + wildCardArray + ' | ' + input);
+          response = answer;
+        };
+
+        aimlInterpreter.findAnswerInLoadedAIMLFiles(msg, getResponse);
+
+        users[socket.nickname].emit('pm from', {name: 'Alice', msg: msg});
+
+        //emit Alice reponse to yourself
+        users[socket.nickname].emit('pm to', {name: 'Alice', msg: response});
+
+        callback(true);
+
+    } else{
       //broadcast event to everyone
       io.emit('new message', {name: socket.nickname, msg: msg});
     }

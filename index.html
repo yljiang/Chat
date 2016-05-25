@@ -60,7 +60,7 @@
     <div>
     
       <div id='chat'>
-        <p> Welcome to the chatroom! <br> To whisper to someone use /w user msg </p>
+        <p><b>Alice:</b> Welcome to the chatroom! To whisper to someone use /w user msg. To talk to me use /alice msg</p>
         <ul id='messages'></ul>
         <form id='chat-form'>
           <input id='m' autocomplete='off' /><button>Send</button>
@@ -122,12 +122,20 @@
       elem.scrollTop = elem.scrollHeight; 
     });
 
-    socket.on('pm', function(data){
+    socket.on('pm to', function(data){
       $('#messages').append('<li><span class="pm"><b>From ' +  data.name +'</b>: ' + data.msg + '</span></li>');
       //set scroll to bottom 
       var elem = document.getElementById('chat');
       elem.scrollTop = elem.scrollHeight; 
     });
+
+    socket.on('pm from', function(data){
+      $('#messages').append('<li><b>To ' +  data.name +'</b>: ' + data.msg + '</li>');
+      //set scroll to bottom 
+      var elem = document.getElementById('chat');
+      elem.scrollTop = elem.scrollHeight; 
+    });
+
 
     socket.on('online users', function(html){
         console.log(html);

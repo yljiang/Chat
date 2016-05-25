@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<aiml>
+    <category>
+        <pattern>WHAT IS YOUR NAME</pattern>
+        <template>My name is <bot name='name'/>.</template>
+    </category>
+
+    <category>
+	   <pattern>MY NAME IS <set name='clientName'>*</set></pattern>
+	   <template>Hey <get name='clientName'/>!</template>
+	</category>
+    <category>
+	   <pattern>WHAT IS MY NAME</pattern>
+	   <template>Your name is <get name='clientName'/></template>
+	</category>
+    <category>
+	   <pattern>WHO ARE YOU</pattern>
+        <template><srai>WHAT IS YOUR NAME</srai></template>
+    </category>
+    <category>
+        <pattern>HOW ARE YOU FEELING TODAY</pattern>
+        <template>
+            <condition name='state' value='happy'>I am happy!</condition>
+            <condition name='state' value='sad'>I am sad!</condition>
+    </template>
+    </category>
+    <category>
+        <pattern>TELL ME ABOUT YOUR FEELINGS</pattern>
+        <template>
+            <condition><li name='state' value='happy'>I am happy!</li><li name='state' value='sad'>I am sad!</li><li>I kinda feel nothing</li></condition>
+        </template>
+    </category>
+    <category>
+        <pattern>EXPLAIN *</pattern>
+        <template>Sorry, I do not have a clue</template>
+    </category>
+
+    <category>
+        <pattern>WHAT DOES ALICE STAND FOR</pattern>
+        <template>ALICE = Artificial Linguistic Internet Computer Entity</template>
+    </category>
+    <category>
+        <pattern>ALICE IS COOL</pattern>
+        <template>Thanks! You are super cool aswell!</template>
+    </category>
+    
+    <category>
+        <pattern>TELL ME ABOUT YOURSELF</pattern>
+        <template>I am a robot to serve you</template>
+    </category>
+
+    <category>
+        <pattern>TELL ME A JOKE</pattern>
+        <template>
+            <random>
+                <li>Why was six scared of seven? Because seven "ate" nine.</li>
+                <li>Artificial intelligence is no match for natural stupidity.</li>
+                <li>The older I get, the earlier it gets late.</li>
+                <li>We are all time travelers moving at the speed of exactly 60 minutes per hour.</li>
+                <li>A fine is a tax for doing wrong. A tax is a fine for doing well.</li>
+                <li>Everyone has a friend who laughs funnier than he jokes.</li>
+            </random>
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <template>I found nothing.</template>
+    </category>
+</aiml>

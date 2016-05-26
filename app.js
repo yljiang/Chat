@@ -1,4 +1,5 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var AIMLInterpreter = require('AIMLInterpreter');
@@ -6,9 +7,7 @@ var AIMLInterpreter = require('AIMLInterpreter');
 var aimlInterpreter = new AIMLInterpreter({name:'Alice', state:'happy'});
 aimlInterpreter.loadAIMLFilesIntoArray(['alice.xml']);
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
-});
+app.use(express.static(__dirname + '/public'));
 
 var users = {};
 
@@ -112,6 +111,7 @@ function updateOnlineUsers(){
 }
 
 
-http.listen(3000, function(){
+
+http.listen(process.env.PORT || 3000, function(){
   console.log('listening on *:3000');
 });

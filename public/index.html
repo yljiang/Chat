@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <!-- Latest compiled and minified JavaScript -->
+    <!-- <link rel="stylesheet" type="text/css" href="/style.css"> -->
+  </head>
+
+
+  <body>
+    <div class="container">
+      <div id='registration-div'>
+        <h2 id='lblName'>Username</h2>
+        <p id='username-taken'> </p>
+        <form id='registration'>
+          <input type='text' id='nickname' autofocus>
+          <input type='submit' id='btnName'>
+        </form>
+
+      </div>
+
+      <div>
+      
+        <div id='chat'>
+    
+          <ul id='messages'>
+            <li>
+              <b>Alice:</b> Welcome to the chatroom! To whisper to someone use /w user msg. To talk to me use /alice msg
+            </li>
+          </ul>
+          <form id='chat-form'>
+            <input id='m' autocomplete='off' autofocus /><button>Send</button>
+          </form> 
+       </div> 
+
+       <div id='userlist'>
+
+          <h4>Online Users </h4>
+          <ul id='onlineusers'></ul>
+
+       </div>
+      </div> 
+    </div>
+
+   <script src='javascript/socket.io.js'></script>
+    <script src='http://code.jquery.com/jquery-1.11.1.js'></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src='javascript/script.js'></script>
+
+  </body>
+</html>

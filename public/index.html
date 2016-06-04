@@ -5,9 +5,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <!-- Latest compiled and minified JavaScript -->
-    <!-- <link rel="stylesheet" type="text/css" href="/style.css"> -->
   </head>
-
 
   <body>
     <div class="container">
@@ -42,6 +40,18 @@
 
        </div>
       </div> 
+    </div>
+
+    <div id="prompt">
+      <form id="aiml-form">
+        <h4> Give ALICE Commands! </h4>
+        <label for="commandd">Command</label>
+        <input type="text" name="command" id="aiml-command">
+        <label for="response">Response</label>
+        <input type="text" name="response" id="aiml-response">
+        <input type="submit" name="Submit">
+      </form>
+      
     </div>
 
    <script src='javascript/socket.io.js'></script>

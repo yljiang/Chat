@@ -1,12 +1,11 @@
 var socket = io();
-$('#chat').hide();
 $('#userlist').hide();
 
+//Registration
 $('#registration').submit(function(e){
   e.preventDefault();
 
   socket.emit('new user', $('#nickname').val(), function(data){
-  console.log("registration clicked");
 
     if(data){
       $('#chat').show();
@@ -14,26 +13,35 @@ $('#registration').submit(function(e){
       $('#userlist').show();
       $('#m').focus();
     } else {
-      $('#username-taken').html('Sorry! Username is already taken!');
+      $('#username-taken').html('<b>Sorry! Username is already taken!</b>');
     }
   });
 });
 
+//Send message
 $('#chat-form').submit(function(e){
   e.preventDefault();  
   
   socket.emit('send message', $('#m').val(), function(response){
-      console.log(response);
+      // console.log(response);
       if(response !== true){
         $('#messages').append('<li><span class="error">'+ response + '</span></li>');
       }
   });
 
-  $('m').val('');
+  $('#m').val('');
   return false;
 });
 
-//capture broadcasted message from backend
+$('#aiml-form').submit(function(e){
+  e.preventDefault();
+  var command = $('#aiml-command').val().toUpperCase();
+  var response = $('#aiml-response').val();
+
+  socket.emit('append aiml',{response: response, command: command});
+
+});
+// capture broadcasted events from backend
 socket.on('new message', function(data){
   $('#messages').append('<li><b>' +  data.name +'</b>: ' + data.msg + '</li>');
 
@@ -58,7 +66,6 @@ socket.on('pm from', function(data){
 
 
 socket.on('online users', function(html){
-    console.log(html);
     $('#onlineusers').html(html);
 });
 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<aiml>
+  <category>
+    <pattern>HELLO *</pattern>
+    <template>Hi!</template>
+  </category>
+  <category>
+    <pattern>YO</pattern>
+    <template>YO</template>
+  </category>
+  <category>
+    <pattern>SUP</pattern>
+    <template>WHATS SUP</template>
+  </category>
+  <category>
+    <pattern>BABE</pattern>
+    <template>BBB</template>
+  </category>
+  <category>
+    <pattern>CMD</pattern>
+    <template>BBB</template>
+  </category>
+  <category>
+    <pattern>WHATS YOUR NAME</pattern>
+    <template/>
+  </category>
+  <category>
+    <pattern>NAME</pattern>
+    <template>ALICE</template>
+  </category>
+  <category>
+    <pattern>ASDF</pattern>
+    <template/>
+  </category>
+  <category>
+    <pattern>ASF</pattern>
+    <template>Woahh</template>
+  </category>
+</aiml>

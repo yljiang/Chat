@@ -2,14 +2,20 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+
+// Modules //
+
 var AIMLInterpreter = require('AIMLInterpreter');
+var fs = require('fs');
+var xml2js = require('xml2js');
+
+var users = {};
 
 var aimlInterpreter = new AIMLInterpreter({name:'Alice', state:'happy'});
-aimlInterpreter.loadAIMLFilesIntoArray(['alice.xml']);
+aimlInterpreter.loadAIMLFilesIntoArray(['alice.xml', 'usercmds.xml']);
 
 app.use(express.static(__dirname + '/public'));
 
-var users = {};
 
 io.on('connection', function(socket){
 var player = socket.id;
@@ -95,11 +101,55 @@ var player = socket.id;
       //broadcast event to everyone
       io.emit('new message', {name: socket.nickname, msg: msg});
     }
+  });
+
+  socket.on('append aiml', function(data){
+
+    var xml = '<category><pattern>' + data.command + '</pattern><template>' + data.response + '</template></category>';
+    
+    var entry = {
+      pattern : [data.command],
+      template: [data.response],
+    };
+
+    //figure how to append it to alice.xml
+    xmlToJs('/usercmds.xml', entry, function(err, obj){
+      if(err) throw(err);
+      jsToXml('/usercmds.xml', obj, function(err){
+        //One new command is appended
+        //reload aiml file
+        aimlInterpreter.loadAIMLFilesIntoArray(['usercmds.xml']);
+
+      });
+    });
 
 
   });
 
 });
+
+function xmlToJs(filename, entry, cb){
+    var parser = new xml2js.Parser();
+
+  fs.readFile(__dirname + filename, function(err, data){
+      parser.parseString(data, function(err, xmlStr){
+        // console.log(JSON.stringify(result));
+        if(err) throw (err);
+
+        xmlStr.aiml.category.push(entry);
+        // console.log(xmlStr.aiml.category);
+        cb(err, xmlStr);
+      });
+    });
+}
+
+function jsToXml(filename, obj, cb){
+  var filepath = __dirname + filename;
+  var builder = new xml2js.Builder();
+  var xml = builder.buildObject(obj);
+
+  fs.writeFile(filepath, xml, cb);
+}
 
 function updateOnlineUsers(){
   var html = '';
@@ -109,8 +159,6 @@ function updateOnlineUsers(){
   console.log(html);
   io.emit('online users', html);
 }
-
-
 
 http.listen(process.env.PORT || 3000, function(){
   console.log('listening on *:3000');

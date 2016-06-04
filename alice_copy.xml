@@ -67,8 +67,8 @@
         </template>
     </category>
 
-    <!-- <category>
+    <category>
         <pattern>*</pattern>
         <template>I found nothing.</template>
-    </category> -->
+    </category>
 </aiml>
